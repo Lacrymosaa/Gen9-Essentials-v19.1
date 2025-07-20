@@ -1,0 +1,140 @@
+WARNING: moves.txt uses english text. Just copy moves from 749 to 840 to get the updated ones.
+
+SNOW =======================================================================================
+011_Battle/002_Move/003_Move_Usage_Calculations.rb
+Added clause to add defense multiplier against physical moves if the target is an Ice type in Hail (new Snow)
+
+011_Battle/003_Battle/002_PokeBattle_Battle.rb
+Changed the text to say its snowing instead of hailing.
+
+011_Battle/003_Battle/003_Battle_StartAndEnd.rb
+Changed the text to say its snowing instead of hailing.
+
+011_Battle/003_Battle/012_Battle_Phase_EndOfRound.rb
+Changed the text to say its snowing instead of hailing.
+Adjusted Sandstorm damage inside when :Sandstorm to original 1/8 instead of 1/16 max HP per turn.
+Removed "when :Hail" turn damage
+
+006_Move_Effects_080-0FF.rb
+Applied effect to heal just 1/4 HP on both snow and hail on Moonlight, Morning Sun and Synthesis
+
+MAJOR MOVES ON 011_Battle=====================================================================================
+001_PBEffects.rb
+Added DoubleShock as effect 120
+Added GlaiveRush as effect 121
+Added RageFist as effect 122
+Added SilkTrap as effect 123
+Added BloodMoon as effect 124
+Added SyrupBomb as effect 125
+Added BurningBulwark as effect 126
+
+001_Battler/001_PokeBattle_Battler.rb
+added double shock to delete the type electric from user on def pbTypes
+
+001_Battler/002_Battler_Initialize.rb
+added effect to battler start with DoubleShock set to false
+added effect to battler start with GlaiveRush set to false
+added effect to battler start with RageFist set to 0
+added effect to battler start with SilkTrap set to false
+added effect to battler start with SyrupBomb set to 0
+added effect to battler start with BurningBulwark set to false
+
+001_Battler/003_Battler_ChangeSelf.rb
+Set Double Shock to reset to false after battle
+
+001_Battler/008_Battler_UseMove_Targeting.rb
+added restriction so Dragon Darts doesnt hit Silk Trap
+added restriction so Dragon Darts doesnt hit Burning Bulwark
+
+001_Battler/009_Battler_UseMove_SuccessCheck.rb
+added condition so enemies making contact against silk trap have it speed lowered by 1 stage
+added condition to not be able to select Blood Moon if it is in cooldown
+added condition so enemies making contact against burning bulwark burn themselves
+
+001_Battler/010_Battler_UseMove_TriggerEffects.rb
+Implemented a Rage Fist counter to increase 1 in pbEffectsOnMakingHit
+
+002_Move/003_Move_Usage_Calculations.rb
+added exception in accuracy check to always land hits against targets with the effect Glaive Rush active
+added Glaive Rush multiplier against target in pbCalcDamageMultipliers
+added condition for hydro steam be buffed instead of nerfed on sun and harsh sun weather.
+
+003_Battle/012_Battle_Phase_EndOfRound.rb
+added Countdown effect to Glaive Rush at the end of each turn.
+added Countdown effect to Bloodmoon at the end of each turn.
+added Countdown effect to SyrupBomb at the end of each turn with the enemy's speed decrease.
+added BurningBulwark o turn off at the end of round.
+
+POKEMON=====================================================================================
+PBS/items.txt
+Added Ogerpon's masks
+
+PBS/pokemon.txt
+Changed Tatsugiri Ability to Commander
+
+PBS/pokemonforms.txt
+Added Ogerpon's forms
+Added Tatsugiri's forms
+
+PBS/abilities.txt
+Added Commander
+
+010_Data/002_PBS data/006_Item.rb
+Added Ogerpon's masks to be unlosable
+
+011_Battle/001_PBEffects.rb
+Added Commander as effect 127
+
+Sc011_Battleripts/002_BattleHandlers.rb
+Added condition to trigger Commander on switch in
+
+011_Battle/003_BattleHandlers_Abilities.rb
+Added handler so Commander Tatsugiri gets immunity against damage while on Dondozo's mouth
+Added clause so Commander is not affected by other Abilities
+Added Handler so Commander activates on Switch in to make Tatsugiri enter in Dondozo mouth and give him the buffs. Also makes Tatsugiri sprite not visible.
+
+011_Battle/004_BattleHandlers_Items.rb
+Added condition to Red Card not activate if user is affected by Commander
+Added handler so Ogerpon Masks can multiply Ogerpon base damage.
+
+011_Battle\001_Battler\001_PokeBattle_Battler.rb
+Added condition to trap Commander affected Pokémon into battle
+Added functions to both identify if a Pokémon is a Commander or is a Commander host to identify Tatsugiri and Dondozo affected by it
+
+011_Battle\001_Battler\002_Battler_Initialize.rb
+Added Commander to initiate at nil
+
+011_Battle\001_Battler\003_Battler_ChangeSelf.rb
+Added condition to Dondozo spit out Tatsugiri when dying
+
+011_Battle\001_Battler\006_Battler_AbilityAndItem.rb
+Added checks for Commander ability to make sure it will work on every switch
+
+011_Battle\003_Battle\006_Battle_Action_Switching.rb
+Added condition to block switch by any Pokémon affected by Commander
+
+011_Battle\004_AI\005_AI_Move_EffectScores.rb
+Added return 0 so the AI never hit Tatsugiri slot when affected by Commander
+
+011_Battle\003_Battle\009_Battle_Action_Other.rb
+Block any possibility of Shifting places with Commander affected Pokémon
+
+014_Pokemon/001_Pokemn-related/001_FormHandles.rb
+Added MultipleForms.register for Ogerpon and her masks
+
+Any moves.rb files
+Changed a lot of things to block specific interactions with Commander
+
+MOVES FIXED==========================
+Aqua Step and Torch Song had their effect chance set to 100 due to not applying the buffs before.
+
+MOVES ADDED==========================
+Every move from 761 to 840. Moves related to Terastal were not included. 
+
+POKEMON FORMS ADDED==================
+Tatsugiri, Tauros and Ogerpon forms were added.
+
+POKEMON FILES UPDATES================
+Every Pokémon was updated including the new gen 9 moves to their learnset. Those affected can be checked on the changelogs for forms and Pokémon.
+
+

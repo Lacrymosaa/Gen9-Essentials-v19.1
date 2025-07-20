@@ -1,0 +1,34 @@
+ARCANINE - Hisuian Form:
+  + level: RAGINGFURY
+
+DECIDUEYE - Hisuian Form:
+  + level: TRIPLEARROWS
+
+LANDORUS - Therian Forme:
+  + level: SANDSEARSTORM
+
+SAMUROTT - Hisuian Form:
+  + level: CEASELESSEDGE
+
+SANDSHREW - Alolan:
+  + level: SNOWSCAPE
+
+SLOWKING - Galarian:
+  + egg: CHILLYRECEPTION
+
+THUNDURUS - Therian Forme:
+  + level: WILDBOLTSTORM
+
+TORNADUS - Therian Forme:
+  + level: BLEAKWINDSTORM
+
+TYPHLOSION - Hisuian Form:
+  + level: INFERNALPARADE
+
+ZOROARK - Hisuian Form:
+  + level: BITTERMALICE
+
+ZORUA - Hisuian Form:
+  + level: BITTERMALICE
+  + egg: COMEUPPANCE
+
