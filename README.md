@@ -9,12 +9,16 @@ This repository provides an update package for Pokémon fangames built using **P
 - Fixes to incorrect move IDs from older versions.
 - 80+ new Gen 9 moves fully implemented.
 - Updated Pokémon learnsets that:
-  - Fetch all moves learned from Gen 1 to Gen 9.
+  - Fetch all moves learned from Gen 1 to Gen 9 using data from POKEAPI (partially incomplete gen 9 learnset coverage).
   - Avoid repeated moves.
 - Added Tatsugiri and its forms.
 - Added Paldean Tauros and its forms.
 - Added Ogerpon and its forms.
-- Implemented the Commander ability.
+- Added Bloodmoon Ursaluna, Hisuian Braviary, Hisuian Sliggoo, Hisuian Avalugg, Hisuian Lilligant and the Hisuian starters as alternative evolutions to their previous forms (check 010_Data/001_Hardcoded data/007_Evolution.rb)
+- Added Urshifu's scrolls as evolution stone
+- Implemented the Commander ability with AI coverage.
+- Implemented the abilities Of Ruin, Toxic Chain, Good as Gold, Toxic Debris, Thermal Exchange, Mind's Eye, Armor Tail, Guard Dog, Supreme Overlord, Well-Baked Body, Protosynthesis and Quark Drive with no AI coverage.
+- Added Booster Energy.
 - Hail mechanics changed to Snow, as per Gen 9.
 
 ## Installation
