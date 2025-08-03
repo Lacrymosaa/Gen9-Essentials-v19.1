@@ -250,6 +250,9 @@ class PokeBattle_Battler
 
   def pbLowerStatStageByAbility(stat,increment,user,splashAnim=true,checkContact=false)
     ret = false
+    if hasActiveAbility?(:GUARDDOG) && user.ability == :INTIMIDATE
+      return pbRaiseStatStageByAbility(stat, increment, self, true)
+    end
     @battle.pbShowAbilitySplash(user) if splashAnim
     if pbCanLowerStatStage?(stat,user,nil,PokeBattle_SceneConstants::USE_ABILITY_SPLASH) &&
        (!checkContact || affectedByContactEffect?(PokeBattle_SceneConstants::USE_ABILITY_SPLASH))

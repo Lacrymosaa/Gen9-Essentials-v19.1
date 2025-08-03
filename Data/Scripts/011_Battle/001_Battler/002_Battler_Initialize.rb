@@ -177,6 +177,7 @@ class PokeBattle_Battler
     @effects[PBEffects::BideDamage]          = 0
     @effects[PBEffects::BideTarget]          = -1
     @effects[PBEffects::BloodMoon]           = 0
+    @effects[PBEffects::BoosterEnergy]       = false
     @effects[PBEffects::BurningBulwark]      = false
     @effects[PBEffects::BurnUp]              = false
     @effects[PBEffects::Charge]              = 0
@@ -250,6 +251,7 @@ class PokeBattle_Battler
     @effects[PBEffects::Nightmare]           = false
     @effects[PBEffects::Salted]           = false
     @effects[PBEffects::Outrage]             = 0
+    @effects[PBEffects::ParadoxStat]         = nil
     @effects[PBEffects::ParentalBond]        = 0
     @effects[PBEffects::PickupItem]          = nil
     @effects[PBEffects::PickupUse]           = 0
@@ -280,6 +282,7 @@ class PokeBattle_Battler
     @effects[PBEffects::Stockpile]           = 0
     @effects[PBEffects::StockpileDef]        = 0
     @effects[PBEffects::StockpileSpDef]      = 0
+    @effects[PBEffects::SupremeOverlord]     = 0
     @effects[PBEffects::SyrupBomb]           = 0
     @effects[PBEffects::Taunt]               = 0
     @effects[PBEffects::ThroatChop]          = 0

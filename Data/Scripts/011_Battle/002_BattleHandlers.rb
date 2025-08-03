@@ -453,7 +453,6 @@ module BattleHandlers
   end
 
   def self.triggerAbilityOnSwitchIn(ability,battler,battle)
-    return if !battler.hasActiveAbility?(:COMMANDER)
     return if battler.effects[PBEffects::Commander]
     AbilityOnSwitchIn.trigger(ability,battler,battle)
   end

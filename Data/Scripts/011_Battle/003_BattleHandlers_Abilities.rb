@@ -50,6 +50,15 @@ BattleHandlers::SpeedCalcAbility.add(:UNBURDEN,
   }
 )
 
+BattleHandlers::SpeedCalcAbility.add(:PROTOSYNTHESIS,
+  proc { |ability, battler, mult, ret|
+    next mult if battler.effects[PBEffects::Transform]
+    next mult * 1.5 if battler.effects[PBEffects::ParadoxStat] == :SPEED
+  }
+)
+
+BattleHandlers::SpeedCalcAbility.copy(:PROTOSYNTHESIS, :QUARKDRIVE)
+
 #===============================================================================
 # WeightCalcAbility handlers
 #===============================================================================
@@ -171,7 +180,7 @@ BattleHandlers::StatusImmunityAbility.add(:WATERVEIL,
   }
 )
 
-BattleHandlers::StatusImmunityAbility.copy(:WATERVEIL,:WATERBUBBLE)
+BattleHandlers::StatusImmunityAbility.copy(:WATERVEIL,:WATERBUBBLE, :THERMALEXCHANGE)
 
 #========================
 # MEREQUETENGUE ABILITY 
@@ -380,7 +389,7 @@ BattleHandlers::StatusCureAbility.add(:WATERVEIL,
   }
 )
 
-BattleHandlers::StatusCureAbility.copy(:WATERVEIL,:WATERBUBBLE)
+BattleHandlers::StatusCureAbility.copy(:WATERVEIL,:WATERBUBBLE, :THERMALEXCHANGE)
 
 #===============================================================================
 # StatLossImmunityAbility handlers
@@ -469,6 +478,9 @@ BattleHandlers::StatLossImmunityAbility.add(:KEENEYE,
     next true
   }
 )
+
+BattleHandlers::StatLossImmunityAbility.copy(:KEENEYE, :MINDSEYE)
+
 
 #===============================================================================
 # StatLossImmunityAbilityNonIgnorable handlers
@@ -615,7 +627,7 @@ BattleHandlers::MoveBlockingAbility.add(:DAZZLING,
   }
 )
 
-BattleHandlers::MoveBlockingAbility.copy(:DAZZLING,:QUEENLYMAJESTY)
+BattleHandlers::MoveBlockingAbility.copy(:DAZZLING,:QUEENLYMAJESTY, :ARMORTAIL)
 
 #===============================================================================
 # MoveImmunityTargetAbility handlers
@@ -626,6 +638,18 @@ BattleHandlers::MoveImmunityTargetAbility.add(:COMMANDER,
     battle.pbDisplay(_INTL("{1} avoided the attack!", target.pbThis))
     next true
 }
+)
+
+BattleHandlers::MoveImmunityTargetAbility.add(:GOODASGOLD,
+  proc { |ability, user, target, move, type, battle|
+    next false if !move.statusMove?
+    #next false if user.index == target.index
+    battle.pbShowAbilitySplash(target)
+    battle.pbDisplay(_INTL("{1}'s {2} blocks {3}!",
+    target.pbThis, target.abilityName, move.name))
+    battle.pbHideAbilitySplash(target)
+    next true
+  }
 )
 
 BattleHandlers::MoveImmunityTargetAbility.add(:BULLETPROOF,
@@ -754,6 +778,12 @@ BattleHandlers::MoveImmunityTargetAbility.add(:WONDERGUARD,
   }
 )
 
+BattleHandlers::MoveImmunityTargetAbility.add(:WELLBAKEDBODY,
+  proc { |ability,user,target,move,type,battle|
+    next pbBattleMoveImmunityStatAbility(user,target,move,type,:FIRE,:DEFENSE,2,battle)
+  }
+)
+
 #===============================================================================
 # MoveBaseTypeModifierAbility handlers
 #===============================================================================
@@ -825,6 +855,8 @@ BattleHandlers::AccuracyCalcUserAbility.add(:KEENEYE,
     mods[:evasion_stage] = 0 if mods[:evasion_stage] > 0 && Settings::MECHANICS_GENERATION >= 6
   }
 )
+
+BattleHandlers::AccuracyCalcUserAbility.copy(:KEENEYE, :MINDSEYE)
 
 BattleHandlers::AccuracyCalcUserAbility.add(:NOGUARD,
   proc { |ability,mods,user,target,move,type|
@@ -1208,6 +1240,17 @@ BattleHandlers::DamageCalcUserAbility.add(:SILVERFLAMES,
   }
 )
 
+BattleHandlers::DamageCalcUserAbility.add(:PROTOSYNTHESIS,
+  proc { |ability, user, target, move, mults, baseDmg, type|
+    next if user.effects[PBEffects::Transform]
+    stat = user.effects[PBEffects::ParadoxStat]
+    mults[:attack_multiplier] *= 1.3 if move.physicalMove? && stat == :ATTACK
+    mults[:attack_multiplier] *= 1.3 if move.specialMove?  && stat == :SPECIAL_ATTACK
+  }
+)
+
+BattleHandlers::DamageCalcUserAbility.copy(:PROTOSYNTHESIS, :QUARKDRIVE)
+
 BattleHandlers::EORHealingAbility.add(:SILVERFLAMES,
   proc { |ability,battler,battle|
     battle.pbShowAbilitySplash(battler)
@@ -1249,6 +1292,14 @@ BattleHandlers::DamageCalcUserAllyAbility.add(:POWERSPOT,
 BattleHandlers::DamageCalcUserAllyAbility.add(:STEELYSPIRIT,
   proc { |ability,user,target,move,mults,baseDmg,type|
     mults[:base_damage_multiplier] *= 1.5 if type == :STEEL
+  }
+)
+
+BattleHandlers::DamageCalcUserAllyAbility.add(:SUPREMEOVERLORD,
+  proc { |ability, user, target, move, mults, baseDmg, type|
+    bonus = user.effects[PBEffects::SupremeOverlord]
+    next if bonus <= 0
+    mults[:base_damage_multiplier] *= (1 + (0.1 * bonus))
   }
 )
 
@@ -1344,6 +1395,19 @@ BattleHandlers::DamageCalcTargetAbility.add(:PUNKROCK,
     mults[:final_damage_multiplier] /= 2 if move.soundMove?
   }
 )
+
+BattleHandlers::DamageCalcTargetAbility.add(:PROTOSYNTHESIS,
+  proc { |ability, user, target, move, mults, baseDmg, type|
+    next if target.effects[PBEffects::Transform]
+    stat = target.effects[PBEffects::ParadoxStat]
+    mults[:defense_multiplier] *= 1.3 if move.physicalMove? && stat == :DEFENSE
+    mults[:defense_multiplier] *= 1.3 if move.specialMove?  && stat == :SPECIAL_DEFENSE
+  }
+)
+
+BattleHandlers::DamageCalcTargetAbility.copy(:PROTOSYNTHESIS, :QUARKDRIVE)
+
+
 
 #===============================================================================
 # DamageCalcTargetAbilityNonIgnorable handlers
@@ -1857,6 +1921,26 @@ BattleHandlers::TargetAbilityOnHit.add(:GULPMISSILE,
     end
   }
 )
+
+BattleHandlers::TargetAbilityOnHit.add(:TOXICDEBRIS,
+  proc { |ability, user, target, move, battle|
+    next if !move.physicalMove?
+    next if target.damageState.substitute
+    next if target.pbOpposingSide.effects[PBEffects::ToxicSpikes] >= 2
+    battle.pbShowAbilitySplash(target)
+    target.pbOpposingSide.effects[PBEffects::ToxicSpikes] += 1
+    battle.pbAnimation(:TOXICSPIKES, target, target.pbDirectOpposing)
+    battle.pbDisplay(_INTL("Poison spikes were scattered on the ground all around {1}!", target.pbOpposingTeam(true)))
+    battle.pbHideAbilitySplash(target)
+  }
+)
+
+BattleHandlers::TargetAbilityOnHit.add(:THERMALEXCHANGE,
+  proc { |ability, user, target, move, battle|
+    next if move.calcType != :FIRE
+    target.pbRaiseStatStageByAbility(:ATTACK, 1, target)
+  }
+)
 #===============================================================================
 # UserAbilityOnHit handlers
 #===============================================================================
@@ -1864,6 +1948,27 @@ BattleHandlers::TargetAbilityOnHit.add(:GULPMISSILE,
 BattleHandlers::UserAbilityOnHit.add(:POISONTOUCH,
   proc { |ability,user,target,move,battle|
     next if !move.contactMove?
+    next if battle.pbRandom(100)>=30
+    battle.pbShowAbilitySplash(user)
+    if target.hasActiveAbility?(:SHIELDDUST) && !battle.moldBreaker
+      battle.pbShowAbilitySplash(target)
+      if !PokeBattle_SceneConstants::USE_ABILITY_SPLASH
+        battle.pbDisplay(_INTL("{1} is unaffected!",target.pbThis))
+      end
+      battle.pbHideAbilitySplash(target)
+    elsif target.pbCanPoison?(user,PokeBattle_SceneConstants::USE_ABILITY_SPLASH)
+      msg = nil
+      if !PokeBattle_SceneConstants::USE_ABILITY_SPLASH
+        msg = _INTL("{1}'s {2} poisoned {3}!",user.pbThis,user.abilityName,target.pbThis(true))
+      end
+      target.pbPoison(user,msg)
+    end
+    battle.pbHideAbilitySplash(user)
+  }
+)
+
+BattleHandlers::UserAbilityOnHit.add(:TOXICCHAIN,
+  proc { |ability,user,target,move,battle|
     next if battle.pbRandom(100)>=30
     battle.pbShowAbilitySplash(user)
     if target.hasActiveAbility?(:SHIELDDUST) && !battle.moldBreaker
@@ -2596,7 +2701,7 @@ BattleHandlers::AbilityOnSwitchIn.add(:INTIMIDATE,
     battle.eachOtherSideBattler(battler.index) do |b|
       next if !b.near?(battler)
       check_item = true; check_abil = false
-      if b.hasActiveAbility?(:CONTRARY)
+      if b.hasActiveAbility?(:CONTRARY, :GUARDDOG)
         check_item = false if b.statStageAtMax?(:ATTACK)
       else
         check_item = false if b.statStageAtMin?(:ATTACK)
@@ -2851,6 +2956,93 @@ BattleHandlers::AbilityOnSwitchIn.add(:COMMANDER,
       battle.pbHideAbilitySplash(battler)
       break
     end
+  }
+)
+
+BattleHandlers::AbilityOnSwitchIn.add(:PROTOSYNTHESIS,
+  proc { |ability, battler, battle, switch_in|
+    next if battler.effects[PBEffects::Transform]
+    case ability
+    when :PROTOSYNTHESIS then field_check = [:Sun, :HarshSun].include?(battle.pbWeather)
+    when :QUARKDRIVE     then field_check = battle.field.terrain == :Electric
+    end
+    if !field_check && !battler.effects[PBEffects::BoosterEnergy] && battler.effects[PBEffects::ParadoxStat]
+      battle.pbDisplay(_INTL("The effects of {1}'s {2} wore off!", battler.pbThis(true), battler.abilityName))
+      battler.effects[PBEffects::ParadoxStat] = nil
+    end
+    next if battler.effects[PBEffects::ParadoxStat]
+    next if !field_check && battler.item != :BOOSTERENERGY
+    highestStat = nil
+    highestStatVal = 0
+    stageMul = [2, 2, 2, 2, 2, 2, 2, 3, 4, 5, 6, 7, 8]
+    stageDiv = [8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 2, 2, 2]
+    battler.plainStats.each do |stat, val|
+      stage = battler.stages[stat] + 6
+      realStat = (val.to_f * stageMul[stage] / stageDiv[stage]).floor
+      if realStat > highestStatVal
+        highestStatVal = realStat 
+        highestStat = stat
+      end
+    end
+    if highestStat
+      battle.pbShowAbilitySplash(battler)
+      if field_check
+        case ability
+        when :PROTOSYNTHESIS then cause = "harsh sunlight"
+        when :QUARKDRIVE     then cause = "Electric Terrain"
+        end
+        battle.pbDisplay(_INTL("The #{cause} activated {1}'s {2}!", battler.pbThis(true), battler.abilityName))
+      elsif battler.item_id == :BOOSTERENERGY
+        battler.effects[PBEffects::BoosterEnergy] = true
+        battle.pbDisplay(_INTL("{1} used its {2} to activate its {3}!", battler.pbThis, battler.itemName, battler.abilityName))
+        battler.pbHeldItemTriggered(battler.item)
+      end
+      battler.effects[PBEffects::ParadoxStat] = highestStat
+      battle.pbDisplay(_INTL("{1}'s {2} was heightened!", battler.pbThis, GameData::Stat.get(highestStat).name))
+      battle.pbHideAbilitySplash(battler)
+    end
+  }
+)
+
+BattleHandlers::AbilityOnSwitchIn.copy(:PROTOSYNTHESIS, :QUARKDRIVE)
+
+BattleHandlers::AbilityOnTerrainChange.add(:QUARKDRIVE,
+  proc { |ability, battler, battle, switch_in|
+    BattleHandlers.triggerAbilityOnSwitchIn(ability, battler, battle, switch_in)
+  }
+)
+
+BattleHandlers::AbilityOnSwitchIn.add(:TABLETSOFRUIN,
+  proc { |ability, battler, battle, switch_in|
+    case ability
+    when :TABLETSOFRUIN then stat_name = GameData::Stat.get(:ATTACK).name
+    when :SWORDOFRUIN   then stat_name = GameData::Stat.get(:DEFENSE).name
+    when :VESSELOFRUIN  then stat_name = GameData::Stat.get(:SPECIAL_ATTACK).name
+    when :BEADSOFRUIN   then stat_name = GameData::Stat.get(:SPECIAL_DEFENSE).name
+    end
+    battle.pbShowAbilitySplash(battler)
+    battle.pbDisplay(_INTL("{1}'s {2} weakened the {3} of all surrounding Pokémon!", battler.pbThis, battler.abilityName, stat_name))
+    battle.pbHideAbilitySplash(battler)
+  }
+)
+
+BattleHandlers::AbilityOnSwitchIn.copy(:TABLETSOFRUIN, :SWORDOFRUIN, :VESSELOFRUIN, :BEADSOFRUIN)
+
+BattleHandlers::AbilityOnSwitchIn.add(:SUPREMEOVERLORD,
+  proc { |ability, battler, battle, switch_in|
+    fainted_count = 0
+    party = battle.pbParty(battler.index)
+    party.each_with_index do |pkmn, i|
+      next if !pkmn || pkmn.hp > 0
+      next if i == battler.pokemonIndex
+      fainted_count += 1
+    end
+    numFainted = [5, fainted_count].min
+    next if numFainted <= 0
+    battle.pbShowAbilitySplash(battler)
+    battle.pbDisplay(_INTL("{1} gained strength from the fallen!", battler.pbThis))
+    battler.effects[PBEffects::SupremeOverlord] = numFainted
+    battle.pbHideAbilitySplash(battler)
   }
 )
 

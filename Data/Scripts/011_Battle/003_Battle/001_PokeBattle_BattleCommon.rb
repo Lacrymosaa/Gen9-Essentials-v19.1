@@ -110,7 +110,7 @@ module PokeBattle_BattleCommon
       return
     end
 
-    if $game_switches[2096] == true && pbPlayer.owned?(battler.species)
+    if $game_switches[2092] == true && pbPlayer.owned?(battler.species)
 	    @scene.pbThrowAndDeflect(ball,1)
 	    pbDisplay(_INTL("¡No puedes atrapar la misma línea evolutiva por segunda vez en modo Radical!"))
       return

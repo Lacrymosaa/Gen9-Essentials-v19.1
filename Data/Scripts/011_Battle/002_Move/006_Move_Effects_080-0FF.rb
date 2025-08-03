@@ -3016,7 +3016,7 @@ class PokeBattle_Move_0EB < PokeBattle_Move
       @battle.pbDisplay(_INTL("But it failed!"))
       return true
     end
-    if target.hasActiveAbility?(:SUCTIONCUPS) && !@battle.moldBreaker
+    if target.hasActiveAbility?(:SUCTIONCUPS, :GUARDDOG) && !@battle.moldBreaker
       @battle.pbShowAbilitySplash(target)
       if PokeBattle_SceneConstants::USE_ABILITY_SPLASH
         @battle.pbDisplay(_INTL("{1} anchors itself!",target.pbThis))
@@ -3106,7 +3106,7 @@ class PokeBattle_Move_0EC < PokeBattle_Move
       next if b.isCommander?
       next if switchedBattlers.include?(b.index)
       next if b.effects[PBEffects::Ingrain]
-      next if b.hasActiveAbility?(:SUCTIONCUPS) && !@battle.moldBreaker
+      next if b.hasActiveAbility?(:SUCTIONCUPS, :GUARDDOG) && !@battle.moldBreaker
       newPkmn = @battle.pbGetReplacementPokemonIndex(b.index,true)   # Random
       next if newPkmn<0
       @battle.pbRecallAndReplace(b.index, newPkmn, true)

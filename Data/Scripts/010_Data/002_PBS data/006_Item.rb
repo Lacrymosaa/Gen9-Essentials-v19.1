@@ -161,6 +161,7 @@ module GameData
          :OGERPON  => [:WELLSPRINGMASK,:HEARTHFLAMEMASK,:CORNERSTONEMASK]
       }
       return combos[species] && combos[species].include?(@id)
+      return true if @id == :BOOSTERENERGY
     end
   end
 end

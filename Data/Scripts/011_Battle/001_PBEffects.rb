@@ -131,6 +131,9 @@ begin
     SyrupBomb           = 125
     BurningBulwark      = 126
     Commander           = 127
+    BoosterEnergy       = 128
+    ParadoxStat         = 129
+    SupremeOverlord     = 130
     #===========================================================================
     # These effects apply to a battler position
     #===========================================================================

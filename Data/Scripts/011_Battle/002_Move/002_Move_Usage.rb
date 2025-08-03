@@ -211,6 +211,12 @@ class PokeBattle_Move
         elsif target.hasActiveItem?(:FOCUSBAND) && @battle.pbRandom(100)<10
           target.damageState.focusBand = true
           damage -= 1
+
+        # LAZO DE RIOLU/LUCARIO ######
+        elsif (target.isSpecies?(:RIOLU) || target.isSpecies?(:LUCARIO)) && target.form == 1 && @battle.pbRandom(100)<33
+          target.damageState.bondy = true
+          damage -= 1
+        ################################
         elsif Settings::AFFECTION_EFFECTS && @battle.internalBattle &&
            target.pbOwnedByPlayer? && !target.mega?
           chance = [0, 0, 0, 10, 15, 25][target.affection_level]
@@ -332,6 +338,14 @@ class PokeBattle_Move
       @battle.pbHideAbilitySplash(target)
     elsif target.damageState.endured
       @battle.pbDisplay(_INTL("{1} endured the hit!",target.pbThis))
+    
+    # RIOLU / LUCARIO ###########################
+    elsif target.damageState.bondy
+      pbSEPlay("HAKI",100)
+      pbWait(10)
+      @battle.pbDisplayPaused(_INTL("{1} ha aguantado el golpe gracias al lazo que lleva... ¿Es mágico o acaso te hace <c3=FF7373,A04040>inmortal<c3=FFFFFF,000000>?",target.pbThis))
+    #############################################
+
     elsif target.damageState.sturdy
       @battle.pbShowAbilitySplash(target)
       if PokeBattle_SceneConstants::USE_ABILITY_SPLASH

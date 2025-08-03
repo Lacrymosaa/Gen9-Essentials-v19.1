@@ -36,7 +36,7 @@ class PokeBattle_Move
       ret = Effectiveness::NORMAL_EFFECTIVE_ONE if Effectiveness.ineffective_type?(moveType, defType)
     end
     # Foresight
-    if user.hasActiveAbility?(:SCRAPPY) || target.effects[PBEffects::Foresight]
+    if user.hasActiveAbility?(:SCRAPPY) || target.effects[PBEffects::Foresight] || user.hasActiveAbility?(:MINDSEYE)
       ret = Effectiveness::NORMAL_EFFECTIVE_ONE if defType == :GHOST &&
                                                    Effectiveness.ineffective_type?(moveType, defType)
     end
@@ -290,6 +290,16 @@ class PokeBattle_Move
   end
 
   def pbCalcDamageMultipliers(user,target,numTargets,type,baseDmg,multipliers)
+    [:TABLETSOFRUIN, :SWORDOFRUIN, :VESSELOFRUIN, :BEADSOFRUIN].each_with_index do |ability, i|
+      next if !@battle.pbCheckGlobalAbility(ability)
+      category = (i < 2) ? physicalMove? : specialMove?
+      category = !category if i.odd? && @battle.field.effects[PBEffects::WonderRoom] > 0
+      if i.even? && !user.hasActiveAbility?(ability)
+        multipliers[:attack_multiplier] *= 0.75 if category
+      elsif i.odd? && !target.hasActiveAbility?(ability)
+        multipliers[:defense_multiplier] *= 0.75 if category
+      end
+    end
     # Global abilities
     if (@battle.pbCheckGlobalAbility(:DARKAURA) && type == :DARK) ||
        (@battle.pbCheckGlobalAbility(:FAIRYAURA) && type == :FAIRY)
